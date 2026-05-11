@@ -1,0 +1,36 @@
+// Color palette inspired by Dixit box art
+$color-bg: #fbe6b5;
+$color-bg-dark: #1d1230;
+$color-primary: #f48b3b;
+$color-primary-dark: #c46620;
+$color-secondary: #4d76b7;
+$color-secondary-dark: #35558a;
+$color-surface: rgba(255, 255, 255, 0.9);
+$color-surface-dark: rgba(17, 24, 39, 0.9);
+$color-text: #3a2a35;
+$color-text-soft: #6b5462;
+$color-text-inverse: #fdf7ec;
+$color-border: rgba(0, 0, 0, 0.08);
+$color-shadow-soft: 0 18px 40px rgba(0, 0, 0, 0.18);
+
+$radius-lg: 18px;
+$radius-md: 12px;
+$radius-pill: 999px;
+
+$bp-md: 960px;
+$bp-sm: 640px;
+
+@mixin card-surface {
+  border-radius: $radius-lg;
+  background: $color-surface;
+  box-shadow: $color-shadow-soft;
+  border: 1px solid $color-border;
+}
+
+@mixin card-surface-dark {
+  border-radius: $radius-lg;
+  background: $color-surface-dark;
+  box-shadow: $color-shadow-soft;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+}
+
