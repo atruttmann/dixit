@@ -4,8 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
+    "sync:cards": "node scripts/sync-card-manifest.mjs",
+    "dev": "node scripts/sync-card-manifest.mjs && vite",
+    "build": "node scripts/sync-card-manifest.mjs && tsc -b && vite build",
+    "postinstall": "node scripts/sync-card-manifest.mjs",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -15,6 +17,9 @@
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.15.0",
     "sass": "^1.99.0"
+  },
+  "optionalDependencies": {
+    "@rolldown/binding-linux-x64-gnu": "1.0.0-rc.18"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
