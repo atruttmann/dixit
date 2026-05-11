@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { absoluteAppUrl } from '../lib/baseUrl'
 import type { LobbyDoc } from '../game/types'
 import { loadCardsFromStorage } from '../lib/cardStorage'
 import { joinLobby, leaveLobby, startGame, subscribeLobby } from '../lib/gameRepository'
@@ -130,7 +131,7 @@ export function LobbyPage() {
           <p>Share this link with friends:</p>
           <input
             className="ghost-input"
-            value={`${window.location.origin}/lobby/${normalizedCode}`}
+            value={absoluteAppUrl(`/lobby/${normalizedCode}`)}
             readOnly
             onFocus={(e) => e.currentTarget.select()}
           />

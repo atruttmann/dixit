@@ -6,7 +6,7 @@
   "scripts": {
     "sync:cards": "node scripts/sync-card-manifest.mjs",
     "dev": "node scripts/sync-card-manifest.mjs && vite",
-    "build": "node scripts/sync-card-manifest.mjs && tsc -b && vite build",
+    "build": "node scripts/sync-card-manifest.mjs && tsc -b && vite build && node scripts/copy-spa-fallback.mjs",
     "postinstall": "node scripts/sync-card-manifest.mjs",
     "lint": "eslint .",
     "preview": "vite preview"

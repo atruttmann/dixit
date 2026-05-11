@@ -98,6 +98,14 @@ Then:
 2. GitHub Actions builds and deploys `dist` to Pages
 3. In repository settings, confirm Pages source is GitHub Actions
 
+### Subfolder URL (e.g. `yoursite.com/dixit`)
+
+If the app is not at the domain root, set **`VITE_BASE_PATH`** to that path with a **trailing slash** (e.g. `/dixit/`). The GitHub Action sets `VITE_BASE_PATH: /dixit/`; change it if your public path differs. Add the same to `.env` when running **`yarn build`** locally so assets and routes match production.
+
+The build copies **`index.html`** to **`404.html`** so deep links like `/dixit/lobby/ABC` load the app on GitHub Pages (otherwise the server returns a plain 404).
+
+**Router:** `BrowserRouter` uses Vite’s `base`; lobby links shared from the lobby screen include this prefix automatically.
+
 ## Scripts
 
 - `yarn dev` - local development
