@@ -93,7 +93,7 @@ export async function startGame(lobbyCode: string, requesterId: string): Promise
   const { filenames, hint } = await loadCardsFromStorage()
   if (filenames.length === 0) {
     const base =
-      'No card images found in Firebase Storage. In the Firebase console, open Storage, add a folder named "cards" (or match VITE_FIREBASE_CARDS_STORAGE_PREFIX), upload .png or .jpg files, and set rules to allow read (and list) on that path. Confirm VITE_FIREBASE_STORAGE_BUCKET in .env matches the bucket shown under Storage (e.g. project-id.appspot.com).'
+      'No card media found in Firebase Storage. In the Firebase console, open Storage, add a folder named "cards" (or match VITE_FIREBASE_CARDS_STORAGE_PREFIX), upload images (.png, .jpg, …) or videos (.mp4, .webm, …), and set rules to allow read (and list) on that path. Confirm VITE_FIREBASE_STORAGE_BUCKET in .env matches the bucket shown under Storage (e.g. project-id.appspot.com).'
     throw new Error(hint ? `${base} Details: ${hint}` : base)
   }
 

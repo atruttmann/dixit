@@ -160,7 +160,7 @@ export function LobbyPage() {
       </main>
 
       <aside className="app-main__side">
-        <Scoreboard players={players} title="Lobby board" />
+        <Scoreboard players={players} title="Lobby board" currentPlayerId={queryPlayerId} />
         <section className="card-panel card-panel--muted">
           <div className="field-label">Need to change name?</div>
           <p>Go back home to update your display name.</p>

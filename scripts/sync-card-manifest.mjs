@@ -7,13 +7,28 @@ const root = path.join(__dirname, '..')
 const cardsDir = path.join(root, 'public', 'cards')
 const outFile = path.join(root, 'src', 'game', 'cardManifest.generated.ts')
 
-const IMAGE_EXT = new Set(['.png', '.jpg', '.jpeg', '.gif', '.webp', '.jfif', '.bmp', '.svg'])
+const MEDIA_EXT = new Set([
+  '.png',
+  '.jpg',
+  '.jpeg',
+  '.gif',
+  '.webp',
+  '.jfif',
+  '.bmp',
+  '.svg',
+  '.mp4',
+  '.webm',
+  '.mov',
+  '.m4v',
+  '.ogv',
+  '.avi',
+])
 
 function main() {
   const names = fs.existsSync(cardsDir)
     ? fs
         .readdirSync(cardsDir, { withFileTypes: true })
-        .filter((e) => e.isFile() && IMAGE_EXT.has(path.extname(e.name).toLowerCase()))
+        .filter((e) => e.isFile() && MEDIA_EXT.has(path.extname(e.name).toLowerCase()))
         .map((e) => e.name)
     : []
 
@@ -26,7 +41,7 @@ export const CARD_IMAGE_FILENAMES: string[] = ${body}
 
   fs.mkdirSync(path.dirname(outFile), { recursive: true })
   fs.writeFileSync(outFile, content, 'utf8')
-  process.stdout.write(`card manifest: ${names.length} image(s) -> ${path.relative(root, outFile)}\n`)
+  process.stdout.write(`card manifest: ${names.length} media file(s) -> ${path.relative(root, outFile)}\n`)
 }
 
 main()

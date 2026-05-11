@@ -64,7 +64,7 @@ export function GamePage() {
   if (!lobby || !game) {
     return (
       <div className="app-main">
-        <main className="app-main__content">
+        <main className="app-main__content game-layout">
           <section className="card-panel">Connecting to game...</section>
         </main>
       </div>
@@ -74,14 +74,13 @@ export function GamePage() {
   if (cardImageById === null) {
     return (
       <div className="app-main">
-        <main className="app-main__content">
+        <main className="app-main__content game-layout">
           <section className="card-panel">Loading card images…</section>
         </main>
       </div>
     )
   }
 
-  const me = lobby.players[playerId]
   const players = Object.values(lobby.players)
   const myHand = game.hands[playerId] ?? []
   const isStoryteller = game.storytellerPlayerId === playerId
@@ -130,7 +129,7 @@ export function GamePage() {
 
   return (
     <div className="app-main">
-      <main className="app-main__content stack-gap">
+      <main className="app-main__content game-layout">
         <section className="card-panel">
           <div className="field-label">Lobby {normalizedCode}</div>
           <h2>Round {game.roundNumber}</h2>
@@ -147,6 +146,17 @@ export function GamePage() {
             </p>
           ) : null}
           {error ? <p className="error-copy">{error}</p> : null}
+          {game.phase === 'ended' ? (
+            <>
+              <p>Game ended.</p>
+              <Link
+                className="primary-button"
+                to={`/lobby/${normalizedCode}?name=${encodeURIComponent(lobby.players[playerId]?.name ?? '')}&playerId=${encodeURIComponent(playerId)}`}
+              >
+                Back to lobby
+              </Link>
+            </>
+          ) : null}
         </section>
 
         <CluePanel
@@ -193,19 +203,7 @@ export function GamePage() {
       </main>
 
       <aside className="app-main__side">
-        <Scoreboard players={players} storytellerId={game.storytellerPlayerId} />
-        <section className="card-panel card-panel--muted">
-          <div className="field-label">You</div>
-          <p>{me?.name ?? 'Unknown player'}</p>
-          {game.phase === 'ended' ? (
-            <>
-              <p>Game ended.</p>
-              <Link className="primary-button" to={`/lobby/${normalizedCode}?name=${encodeURIComponent(me?.name ?? '')}&playerId=${encodeURIComponent(playerId)}`}>
-                Back to lobby
-              </Link>
-            </>
-          ) : null}
-        </section>
+        <Scoreboard players={players} currentPlayerId={playerId} />
       </aside>
     </div>
   )

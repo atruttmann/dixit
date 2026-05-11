@@ -37,6 +37,8 @@ body {
 .app-frame {
   width: 1120px;
   max-width: 100%;
+  min-height: calc(100vh - 48px);
+  min-height: calc(100dvh - 48px);
   display: flex;
   flex-direction: column;
   border-radius: 26px;
@@ -101,6 +103,7 @@ body {
 
 .app-main {
   flex: 1;
+  min-height: 0;
   display: flex;
   padding: 20px 22px 22px;
   gap: 20px;
@@ -110,6 +113,48 @@ body {
 .app-main__content {
   flex: 1;
   min-width: 0;
+  min-height: 0;
+}
+
+/* Game page: stack grows; hand fills remaining viewport height */
+.game-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+  align-self: stretch;
+}
+
+.game-layout > *:not(.card-panel--hand) {
+  flex-shrink: 0;
+}
+
+.card-panel--hand {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.card-panel--hand > .field-label {
+  flex-shrink: 0;
+}
+
+.card-panel--hand > .card-swipe {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-panel--hand .card-swipe__viewport {
+  flex: 1 1 auto;
+  min-height: 140px;
+}
+
+.card-panel--hand .card-swipe__hint {
+  flex-shrink: 0;
 }
 
 .app-main__side {
@@ -179,26 +224,6 @@ body {
   letter-spacing: 0.08em;
   margin-bottom: 6px;
   opacity: 0.9;
-}
-
-.accent-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: $radius-pill;
-  background: rgba(234, 88, 12, 0.1);
-  color: $color-primary-dark;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-}
-
-@media (prefers-color-scheme: dark) {
-  .accent-chip {
-    background: rgba(251, 146, 60, 0.16);
-    color: $color-text-inverse;
-  }
 }
 
 .primary-button {
@@ -326,11 +351,28 @@ body {
   transition: transform 0.15s ease, border-color 0.15s ease;
 }
 
-.play-card img {
-  width: 100%;
-  aspect-ratio: 3 / 2;
-  object-fit: cover;
+/* Natural aspect per asset; width follows card; height capped */
+.play-card .play-card__media,
+.play-card video.play-card__media {
   display: block;
+  width: 100%;
+  max-width: 100%;
+  max-height: 500px;
+  height: auto;
+  object-fit: contain;
+  object-position: center center;
+  vertical-align: middle;
+}
+
+.play-card__media--empty {
+  min-height: 120px;
+  background: rgba(15, 23, 42, 0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+  .play-card__media--empty {
+    background: rgba(148, 163, 184, 0.15);
+  }
 }
 
 .play-card:hover {
@@ -368,5 +410,100 @@ body {
   font-weight: 700;
   background: rgba(30, 41, 59, 0.86);
   color: #fff;
+}
+
+/* ---- Swipe carousel (Embla) — hand & submitted cards ---- */
+.card-swipe {
+  position: relative;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.card-swipe__viewport {
+  overflow: hidden;
+  width: 100%;
+  margin-inline: clamp(36px, 8vw, 52px);
+  border-radius: $radius-md;
+}
+
+.card-swipe__container {
+  display: flex;
+  align-items: center;
+  touch-action: pan-y pinch-zoom;
+  gap: 12px;
+}
+
+.card-swipe__slide {
+  flex: 0 0 min(92vw, 560px);
+  max-width: min(92vw, 560px);
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (min-width: $bp-md) {
+    flex: 0 0 min(75%, 520px);
+    max-width: min(75%, 520px);
+  }
+}
+
+.card-swipe__slide .play-card {
+  width: 100%;
+  align-self: center;
+}
+
+.card-swipe__btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: $radius-pill;
+  font-size: 28px;
+  line-height: 1;
+  cursor: pointer;
+  color: $color-text-inverse;
+  background: linear-gradient(135deg, $color-primary, $color-primary-dark);
+  box-shadow: 0 6px 20px rgba(148, 56, 18, 0.45);
+  opacity: 0.95;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+
+  &:disabled {
+    opacity: 0.25;
+    cursor: default;
+    box-shadow: none;
+  }
+
+  &:not(:disabled):hover {
+    opacity: 1;
+    transform: translateY(-50%) scale(1.05);
+  }
+}
+
+.card-swipe__btn--prev {
+  left: 0;
+}
+
+.card-swipe__btn--next {
+  right: 0;
+}
+
+.card-swipe__hint {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.35;
+  opacity: 0.75;
+  text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-swipe__hint {
+    opacity: 0.8;
+  }
 }
 

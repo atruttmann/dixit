@@ -1,3 +1,6 @@
+import { CardMedia } from './CardMedia'
+import { CardSwipeCarousel } from './CardSwipeCarousel'
+
 type SubmittedCardsGridProps = {
   cardIds: string[]
   cardImageById: Record<string, string>
@@ -17,29 +20,44 @@ export function SubmittedCardsGrid({
   disabled = false,
   onSelectCard,
 }: SubmittedCardsGridProps) {
+  const selectedIndex =
+    selectedCardId != null && cardIds.includes(selectedCardId) ? cardIds.indexOf(selectedCardId) : undefined
+
   return (
-    <section className="card-panel">
+    <section className="card-panel card-panel--submitted-carousel">
       <div className="field-label">Submitted cards</div>
-      <div className="card-grid card-grid--submitted">
+      <CardSwipeCarousel
+        scrollToSlideIndex={selectedIndex}
+        prevLabel="Previous submitted card"
+        nextLabel="Next submitted card"
+      >
         {cardIds.map((cardId, index) => {
           const selected = selectedCardId === cardId
           return (
-            <button
-              key={cardId}
-              type="button"
-              className={`play-card ${selected ? 'play-card--selected' : ''}`}
-              onClick={() => onSelectCard(cardId)}
-              disabled={disabled}
-            >
-              <img src={cardImageById[cardId]} alt={`Submitted card ${index + 1}`} loading="lazy" />
-              <span className="play-card__badge">#{index + 1}</span>
-              {revealVoteCounts ? (
-                <span className="play-card__votes">{votesByCard[cardId] ?? 0} votes</span>
-              ) : null}
-            </button>
+            <div className="card-swipe__slide" key={cardId}>
+              <button
+                type="button"
+                className={`play-card play-card--carousel ${selected ? 'play-card--selected' : ''}`}
+                onClick={(e) => {
+                  if ((e.target as HTMLElement).closest('video')) return
+                  onSelectCard(cardId)
+                }}
+                disabled={disabled}
+              >
+                <CardMedia
+                  cardId={cardId}
+                  src={cardImageById[cardId]}
+                  alt={`Submitted card ${index + 1}`}
+                />
+                <span className="play-card__badge">#{index + 1}</span>
+                {revealVoteCounts ? (
+                  <span className="play-card__votes">{votesByCard[cardId] ?? 0} votes</span>
+                ) : null}
+              </button>
+            </div>
           )
         })}
-      </div>
+      </CardSwipeCarousel>
     </section>
   )
 }

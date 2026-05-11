@@ -2,11 +2,12 @@ import type { LobbyPlayer } from '../game/types'
 
 type ScoreboardProps = {
   players: LobbyPlayer[]
-  storytellerId?: string
+  /** Marks the viewing player's row with “(you)”. */
+  currentPlayerId?: string
   title?: string
 }
 
-export function Scoreboard({ players, storytellerId, title = 'Scoreboard' }: ScoreboardProps) {
+export function Scoreboard({ players, currentPlayerId, title = 'Scoreboard' }: ScoreboardProps) {
   const sorted = [...players].sort((a, b) => b.score - a.score)
 
   return (
@@ -17,7 +18,7 @@ export function Scoreboard({ players, storytellerId, title = 'Scoreboard' }: Sco
           <li key={player.id} className="scoreboard-list__item">
             <span>
               {player.name}
-              {storytellerId === player.id ? ' (storyteller)' : ''}
+              {currentPlayerId === player.id ? ' (you)' : ''}
             </span>
             <span>{player.score}</span>
           </li>

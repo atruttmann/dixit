@@ -43,7 +43,6 @@ export function HomePage() {
     <div className="app-main">
       <main className="app-main__content">
         <section className="card-panel">
-          <div className="accent-chip">Social storytelling for clever friends</div>
           <h1>Dixit online</h1>
           <p>
             Host a room, share the link, and play the classic storytelling game together in your

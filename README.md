@@ -24,6 +24,7 @@ Online multiplayer Dixit built with Vite + React + TypeScript + SCSS and Firebas
 - Vite
 - SCSS
 - Firebase Firestore
+- [Embla Carousel](https://www.embla-carousel.com/) for swipeable card strips (`embla-carousel-react`)
 - GitHub Pages deployment workflow
 
 ## Local setup
@@ -55,12 +56,12 @@ yarn dev
 
 The included rules are intentionally permissive for rapid MVP iteration. Lock them down before production use.
 
-### Card images (Firebase Storage)
+### Card media (Firebase Storage)
 
-The deck is built from image files in your **default Storage bucket**, under the folder **`cards/`** (change with `VITE_FIREBASE_CARDS_STORAGE_PREFIX` in `.env`).
+The deck is built from files in your **default Storage bucket**, under the folder **`cards/`** (change with `VITE_FIREBASE_CARDS_STORAGE_PREFIX` in `.env`). Supported types include common **images** (`.png`, `.jpg`, `.webp`, …) and **videos** (`.mp4`, `.webm`, `.mov`, …). In the game UI, videos play **muted**, **loop**, and show **controls**; clicking the video uses the controls without selecting the card (use the card edge or the index badge to select).
 
 1. In Firebase Console, open **Build → Storage** and create the bucket if needed.
-2. Create a folder **`cards`** and upload your card images (`.png`, `.jpg`, `.webp`, etc.). Nested subfolders are supported.
+2. Create a folder **`cards`** and upload your files. Nested subfolders are supported.
 3. Set **Storage rules** so clients can read those files, for example:
 
 ```txt
@@ -77,7 +78,7 @@ service firebase.storage {
 
 4. Set **`VITE_FIREBASE_STORAGE_BUCKET`** in `.env` to your bucket name (shown in Storage settings, often `PROJECT_ID.appspot.com`).
 
-The host’s browser loads the file list when **Start game** runs; all players resolve the same image URLs from Storage when they open the game screen.
+The host’s browser loads the file list when **Start game** runs; all players resolve the same media URLs from Storage when they open the game screen.
 
 ## GitHub Pages deployment
 

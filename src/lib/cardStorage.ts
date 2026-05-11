@@ -7,8 +7,7 @@ import {
 } from 'firebase/storage'
 import { CARD_IMAGE_FILENAMES } from '../game/cardManifest.generated'
 import { getFirebaseStorage } from './firebase'
-
-const IMAGE_RE = /\.(png|jpg|jpeg|gif|webp|jfif|bmp|svg)$/i
+import { isCardMediaFilename } from './cardMedia'
 
 function cardsPrefix(): string {
   const p = import.meta.env.VITE_FIREBASE_CARDS_STORAGE_PREFIX
@@ -22,15 +21,15 @@ function idRelativeToPrefix(prefix: string, fileRef: StorageReference): string {
   return fileRef.name
 }
 
-/** Lists image files under `folderRef`, including nested "folders" in Storage. */
-async function collectImageFileRefs(
+/** Lists image/video files under `folderRef`, including nested "folders" in Storage. */
+async function collectMediaFileRefs(
   storage: FirebaseStorage,
   folderRef: StorageReference,
 ): Promise<StorageReference[]> {
   const { items, prefixes } = await listAll(folderRef)
-  const here = items.filter((r) => IMAGE_RE.test(r.name))
+  const here = items.filter((r) => isCardMediaFilename(r.name))
   const nested = await Promise.all(
-    prefixes.map((subRef) => collectImageFileRefs(storage, subRef)),
+    prefixes.map((subRef) => collectMediaFileRefs(storage, subRef)),
   )
   return [...here, ...nested.flat()]
 }
@@ -63,7 +62,7 @@ async function resolveUrlsForNames(names: string[]): Promise<Record<string, stri
 }
 
 async function loadFromManifestPaths(): Promise<{ filenames: string[]; urlById: Record<string, string> }> {
-  const names = sortNames([...CARD_IMAGE_FILENAMES].filter((n) => IMAGE_RE.test(n)))
+  const names = sortNames([...CARD_IMAGE_FILENAMES].filter((n) => isCardMediaFilename(n)))
   const urlById = await resolveUrlsForNames(names)
   const filenames = sortNames(Object.keys(urlById))
   return { filenames, urlById }
@@ -94,7 +93,7 @@ async function doLoadCardsFromStorage(): Promise<{
 
   try {
     const folderRef = ref(storage, prefix)
-    const cardRefs = await collectImageFileRefs(storage, folderRef)
+    const cardRefs = await collectMediaFileRefs(storage, folderRef)
 
     const urlById: Record<string, string> = {}
     const chunk = 36
@@ -112,7 +111,7 @@ async function doLoadCardsFromStorage(): Promise<{
       return {
         filenames,
         urlById,
-        hint: `Storage path "${prefix}/" has no image files (.png, .jpg, etc.). Upload files there, or set VITE_FIREBASE_CARDS_STORAGE_PREFIX to match your folder.`,
+        hint: `Storage path "${prefix}/" has no image or video files (.png, .jpg, .mp4, .webm, etc.). Upload files there, or set VITE_FIREBASE_CARDS_STORAGE_PREFIX to match your folder.`,
       }
     }
     return { filenames, urlById }
