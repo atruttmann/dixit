@@ -8,12 +8,11 @@ function App() {
     <div className="app-frame">
       <header className="app-header">
         <div className="app-header__title">
-          <span>DiXit</span>
+          <span>Dixit</span>
         </div>
         <div className="app-header__tagline">
           Play the storytelling card game with friends online.
         </div>
-        <div className="app-header__pill">Prototype</div>
       </header>
       <Routes>
         <Route path="/" element={<HomePage />} />

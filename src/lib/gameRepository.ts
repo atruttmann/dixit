@@ -8,6 +8,7 @@ import {
 } from 'firebase/firestore'
 import { advanceRound, createInitialGame } from '../game/engine'
 import type { GameDoc, LobbyDoc, LobbyPlayer } from '../game/types'
+import { loadCardsFromStorage } from './cardStorage'
 import { getDb } from './firebase'
 
 function lobbyRef(code: string) {
@@ -88,6 +89,13 @@ export function subscribeGame(lobbyCode: string, onData: (game: GameDoc | null) 
 export async function startGame(lobbyCode: string, requesterId: string): Promise<void> {
   const lRef = lobbyRef(lobbyCode)
   const gRef = gameRef(lobbyCode)
+
+  const { filenames, hint } = await loadCardsFromStorage()
+  if (filenames.length === 0) {
+    const base =
+      'No card images found in Firebase Storage. In the Firebase console, open Storage, add a folder named "cards" (or match VITE_FIREBASE_CARDS_STORAGE_PREFIX), upload .png or .jpg files, and set rules to allow read (and list) on that path. Confirm VITE_FIREBASE_STORAGE_BUCKET in .env matches the bucket shown under Storage (e.g. project-id.appspot.com).'
+    throw new Error(hint ? `${base} Details: ${hint}` : base)
+  }
 
   await runTransaction(getDb(), async (tx) => {
     const lobbySnap = await tx.get(lRef)

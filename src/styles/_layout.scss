@@ -99,21 +99,6 @@ body {
   opacity: 0.9;
 }
 
-.app-header__pill {
-  padding: 4px 10px;
-  border-radius: $radius-pill;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  background: rgba(24, 24, 27, 0.12);
-}
-
-@media (prefers-color-scheme: dark) {
-  .app-header__pill {
-    background: rgba(15, 23, 42, 0.75);
-  }
-}
-
 .app-main {
   flex: 1;
   display: flex;

@@ -55,6 +55,30 @@ npm run dev
 
 The included rules are intentionally permissive for rapid MVP iteration. Lock them down before production use.
 
+### Card images (Firebase Storage)
+
+The deck is built from image files in your **default Storage bucket**, under the folder **`cards/`** (change with `VITE_FIREBASE_CARDS_STORAGE_PREFIX` in `.env`).
+
+1. In Firebase Console, open **Build → Storage** and create the bucket if needed.
+2. Create a folder **`cards`** and upload your card images (`.png`, `.jpg`, `.webp`, etc.). Nested subfolders are supported.
+3. Set **Storage rules** so clients can read those files, for example:
+
+```txt
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /cards/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
+```
+
+4. Set **`VITE_FIREBASE_STORAGE_BUCKET`** in `.env` to your bucket name (shown in Storage settings, often `PROJECT_ID.appspot.com`).
+
+The host’s browser loads the file list when **Start game** runs; all players resolve the same image URLs from Storage when they open the game screen.
+
 ## GitHub Pages deployment
 
 Deployment is configured in `.github/workflows/deploy.yml`.

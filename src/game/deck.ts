@@ -1,9 +1,10 @@
+import { getCachedCardFilenamesSync } from '../lib/cardStorage'
 import type { CardDefinition } from './types'
 
 export const DEFAULT_DECK_SIZE = 84
 export const HAND_SIZE = 6
 
-export function createDeck(size = DEFAULT_DECK_SIZE): CardDefinition[] {
+function fallbackDeck(size: number): CardDefinition[] {
   return Array.from({ length: size }, (_, index) => {
     const cardNumber = index + 1
     return {
@@ -11,6 +12,23 @@ export function createDeck(size = DEFAULT_DECK_SIZE): CardDefinition[] {
       imageUrl: `https://picsum.photos/seed/dixit-${cardNumber}/420/280`,
     }
   })
+}
+
+/**
+ * Build a shuffled play deck from filenames cached by `loadCardsFromStorage()`
+ * (Firebase Storage). Call `loadCardsFromStorage` before creating a game.
+ */
+export function createDeck(size = DEFAULT_DECK_SIZE): CardDefinition[] {
+  const pool = [...getCachedCardFilenamesSync()]
+  if (pool.length === 0) {
+    return fallbackDeck(Math.min(size, DEFAULT_DECK_SIZE))
+  }
+  const shuffled = shuffleIds(pool)
+  const count = Math.min(size, shuffled.length)
+  return shuffled.slice(0, count).map((filename) => ({
+    id: filename,
+    imageUrl: '',
+  }))
 }
 
 export function shuffleIds(cardIds: string[]): string[] {
@@ -28,4 +46,3 @@ export function toCardImageMap(deck: CardDefinition[]): Record<string, string> {
     return acc
   }, {})
 }
-

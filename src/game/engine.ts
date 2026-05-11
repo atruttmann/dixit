@@ -1,4 +1,4 @@
-import { createDeck, HAND_SIZE, shuffleIds, toCardImageMap } from './deck'
+import { createDeck, HAND_SIZE, shuffleIds } from './deck'
 import { scoreOfficialDixitRound } from './scoring'
 import type { GameDoc, LobbyPlayer } from './types'
 
@@ -48,10 +48,6 @@ export function createInitialGame(lobbyCode: string, players: LobbyPlayer[]): Ga
     createdAt: now,
     updatedAt: now,
   }
-}
-
-export function toCardImageLookup(): Record<string, string> {
-  return toCardImageMap(createDeck())
 }
 
 export function rotateStoryteller(turnOrder: string[], currentId: string): string {

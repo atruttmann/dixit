@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { CluePanel } from '../components/CluePanel'
 import { PlayerHand } from '../components/PlayerHand'
 import { Scoreboard } from '../components/Scoreboard'
 import { SubmittedCardsGrid } from '../components/SubmittedCardsGrid'
-import { toCardImageLookup } from '../game/engine'
 import type { GameDoc, LobbyDoc } from '../game/types'
+import { loadCardsFromStorage } from '../lib/cardStorage'
 import {
   joinLobby,
   leaveLobby,
@@ -27,7 +27,7 @@ export function GamePage() {
   const [selectedVoteCard, setSelectedVoteCard] = useState<string | null>(null)
   const [clue, setClue] = useState('')
   const [error, setError] = useState('')
-  const cardImageById = useMemo(() => toCardImageLookup(), [])
+  const [cardImageById, setCardImageById] = useState<Record<string, string> | null>(null)
   const normalizedCode = lobbyCode.toUpperCase()
 
   useEffect(() => {
@@ -47,11 +47,35 @@ export function GamePage() {
     }
   }, [normalizedCode, playerId])
 
+  useEffect(() => {
+    let cancelled = false
+    void loadCardsFromStorage()
+      .then(({ urlById }) => {
+        if (!cancelled) setCardImageById(urlById)
+      })
+      .catch(() => {
+        if (!cancelled) setCardImageById({})
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [normalizedCode])
+
   if (!lobby || !game) {
     return (
       <div className="app-main">
         <main className="app-main__content">
           <section className="card-panel">Connecting to game...</section>
+        </main>
+      </div>
+    )
+  }
+
+  if (cardImageById === null) {
+    return (
+      <div className="app-main">
+        <main className="app-main__content">
+          <section className="card-panel">Loading card images…</section>
         </main>
       </div>
     )
