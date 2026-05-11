@@ -31,7 +31,7 @@ Online multiplayer Dixit built with Vite + React + TypeScript + SCSS and Firebas
 1. Install dependencies:
 
 ```bash
-npm install
+yarn install
 ```
 
 2. Copy `.env.example` to `.env` and fill your Firebase Web App values:
@@ -43,7 +43,7 @@ cp .env.example .env
 3. Start dev server:
 
 ```bash
-npm run dev
+yarn dev
 ```
 
 ## Firebase setup
@@ -99,7 +99,7 @@ Then:
 
 ## Scripts
 
-- `npm run dev` - local development
-- `npm run lint` - ESLint checks
-- `npm run build` - typecheck + production build
-- `npm run preview` - preview production build locally
+- `yarn dev` - local development
+- `yarn lint` - ESLint checks
+- `yarn build` - typecheck + production build
+- `yarn preview` - preview production build locally
